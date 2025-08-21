@@ -1,0 +1,47 @@
+public class Albino implements Runnable {
+private int id;
+private int speed;
+private int startX;
+private int endX;
+
+public Albino(int id, int speed, int startX, int endX) {
+this.id = id;
+this.speed = speed;
+this.startX = startX;
+this.endX = endX;
+}
+
+@OverRide
+public void run() {
+int currentPosition = startX;
+
+while (currentPosition != endX) {
+currentPosition += speed;
+
+// Виведення поточної позиції альбіноса
+System.out.println("Альбінос " + id + ": Поточна позиція - " + currentPosition);
+
+// Затримка перед наступним кроком
+try {
+Thread.sleep(1000);
+} catch (InterruptedException e) {
+e.printStackTrace();
+}
+}
+
+// Досягнуто кінцевої позиції
+System.out.println("Альбінос " + id + ": Досягнуто кінцевої позиції - " + endX);
+}
+
+public static void main(String[] args) {
+// Створення потоків для альбіносів і запуск їх роботи
+Thread albino1 = new Thread(new Albino(1, 5, 0, 100));
+Thread albino2 = new Thread(new Albino(2, 8, 200, 500));
+Thread albino3 = new Thread(new Albino(3, 10, 50, 300));
+
+albino1.start();
+albino2.start();
+albino3.start();
+}
+}
+
