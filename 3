@@ -1,0 +1,53 @@
+import javax.swing.;
+import java.awt.;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class RotatingLine extends JPanel implements ActionListener {
+private int angle = 0;
+private Timer timer;
+private final int delay = 10;
+private final int length = 100;
+private final int centerX = 200;
+private final int centerY = 200;
+
+public RotatingLine() {
+timer = new Timer(delay, this);
+timer.start();
+}
+
+@OverRide
+protected void paintComponent(Graphics g) {
+super.paintComponent(g);
+Graphics2D g2d = (Graphics2D) g;
+
+int x2 = centerX + (int) (length * Math.cos(Math.toRadians(angle)));
+int y2 = centerY + (int) (length * Math.sin(Math.toRadians(angle)));
+
+g2d.setColor(getColor());
+g2d.drawLine(centerX, centerY, x2, y2);
+}
+
+private Color getColor() {
+float hue = (float) angle / 360f;
+return Color.getHSBColor(hue, 1f, 1f);
+}
+
+@OverRide
+public void actionPerformed(ActionEvent e) {
+angle++;
+repaint();
+}
+
+public static void main(String[] args) {
+JFrame frame = new JFrame("Rotating Line");
+frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+frame.setSize(400, 400);
+
+RotatingLine rotatingLine = new RotatingLine();
+frame.add(rotatingLine);
+
+frame.setVisible(true);
+}
+}
+
