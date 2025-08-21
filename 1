@@ -1,0 +1,43 @@
+import java.util.Random;
+
+public class Rabbit implements Runnable {
+private int id;
+private int speed;
+private int changeInterval;
+
+public Rabbit(int id, int speed, int changeInterval) {
+    this.id = id;
+    this.speed = speed;
+    this.changeInterval = changeInterval;
+}
+
+@Override
+public void run() {
+    Random random = new Random();
+    int direction = random.nextInt(360); // Початковий напрямок руху (випадково)
+
+    while (true) {
+        // Код для руху кролика зі швидкістю speed у заданому напрямку direction
+        System.out.println("Кролик " + id + " рухається у напрямку " + direction + " зі швидкістю " + speed);
+
+        try {
+            Thread.sleep(changeInterval * 1000); // Затримка перед зміною напрямку
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        direction = random.nextInt(360); // Зміна напрямку руху (випадково)
+    }
+}
+
+public static void main(String[] args) {
+    // Створення потоків для кроликів і запуск їх роботи
+    Thread rabbit1 = new Thread(new Rabbit(1, 10, 5));
+    Thread rabbit2 = new Thread(new Rabbit(2, 8, 7));
+    Thread rabbit3 = new Thread(new Rabbit(3, 12, 3));
+
+    rabbit1.start();
+    rabbit2.start();
+    rabbit3.start();
+}
+}
