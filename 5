@@ -1,0 +1,114 @@
+interface Root {
+void calculateRoots();
+
+void printResult();
+}
+
+class Linear implements Root {
+private double a;
+private double b;
+private double root;
+
+public Linear(double a, double b) {
+    this.a = a;
+    this.b = b;
+}
+
+@Override
+public void calculateRoots() {
+    if (a == 0) {
+        root = Double.NaN;
+    } else {
+        root = -b / a;
+    }
+}
+
+@Override
+public void printResult() {
+    System.out.println("Root of the linear equation: " + root);
+}
+
+@Override
+public String toString() {
+    return "Linear equation: a=" + a + ", b=" + b;
+}
+
+@Override
+public boolean equals(Object obj) {
+    if (this == obj) {
+        return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
+        return false;
+    }
+    Linear other = (Linear) obj;
+    return Double.compare(a, other.a) == 0 && Double.compare(b, other.b) == 0;
+}
+}
+
+class Square implements Root {
+private double a;
+private double b;
+private double c;
+private double root1;
+private double root2;
+
+public Square(double a, double b, double c) {
+    this.a = a;
+    this.b = b;
+    this.c = c;
+}
+
+@Override
+public void calculateRoots() {
+    double discriminant = b * b - 4 * a * c;
+    if (discriminant > 0) {
+        root1 = (-b + Math.sqrt(discriminant)) / (2 * a);
+        root2 = (-b - Math.sqrt(discriminant)) / (2 * a);
+    } else if (discriminant == 0) {
+        root1 = -b / (2 * a);
+        root2 = root1;
+    } else {
+        root1 = Double.NaN;
+        root2 = Double.NaN;
+    }
+}
+
+@Override
+public void printResult() {
+    System.out.println("Roots of the square equation: " + root1 + ", " + root2);
+}
+
+@Override
+public String toString() {
+    return "Square equation: a=" + a + ", b=" + b + ", c=" + c;
+}
+
+@Override
+public boolean equals(Object obj) {
+    if (this == obj) {
+        return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
+        return false;
+    }
+    Square other = (Square) obj;
+    return Double.compare(a, other.a) == 0 && Double.compare(b, other.b) == 0 && Double.compare(c, other.c) == 0;
+}
+}
+
+public class Main {
+public static void main(String[] args) {
+Root[] equations = new Root[2];
+equations[0] = new Linear(2, 3);
+equations[1] = new Square(1, -4, 4);
+
+    for (Root equation : equations) {
+        equation.calculateRoots();
+        equation.printResult();
+        System.out.println(equation.toString());
+        System.out.println(equation.equals(equations[0]));
+    }
+}
+}
+
