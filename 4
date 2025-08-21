@@ -1,0 +1,161 @@
+import javax.swing.;
+import java.awt.;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class MatrixVectorGUI extends JFrame {
+private JTextField dimensionTextField;
+private JTextArea matrixTextArea;
+private JButton calculateButton;
+private JTextArea resultTextArea;
+
+public MatrixVectorGUI() {
+setTitle("Matrix Vector");
+setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+setLayout(new BorderLayout());
+
+JPanel inputPanel = createInputPanel();
+add(inputPanel, BorderLayout.NORTH);
+
+JPanel buttonPanel = createButtonPanel();
+add(buttonPanel, BorderLayout.CENTER);
+
+JPanel resultPanel = createResultPanel();
+add(resultPanel, BorderLayout.SOUTH);
+
+pack();
+setLocationRelativeTo(null);
+}
+
+private JPanel createInputPanel() {
+JPanel panel = new JPanel();
+panel.setLayout(new FlowLayout());
+
+JLabel dimensionLabel = new JLabel("Розмірність матриці (n): ");
+dimensionTextField = new JTextField(10);
+
+panel.add(dimensionLabel);
+panel.add(dimensionTextField);
+
+return panel;
+}
+
+private JPanel createButtonPanel() {
+JPanel panel = new JPanel();
+panel.setLayout(new FlowLayout());
+
+JLabel matrixLabel = new JLabel("Елементи матриці A:");
+matrixTextArea = new JTextArea(10, 20);
+JScrollPane scrollPane = new JScrollPane(matrixTextArea);
+
+panel.add(matrixLabel);
+panel.add(scrollPane);
+
+calculateButton = new JButton("Обчислити");
+calculateButton.addActionListener(new ActionListener() {
+@OverRide
+public void actionPerformed(ActionEvent e) {
+calculateButtonClicked();
+}
+});
+
+panel.add(calculateButton);
+
+return panel;
+}
+
+private JPanel createResultPanel() {
+JPanel panel = new JPanel();
+panel.setLayout(new FlowLayout());
+
+JLabel resultLabel = new JLabel("Вектор B:");
+resultTextArea = new JTextArea(10, 20);
+resultTextArea.setEditable(false);
+JScrollPane scrollPane = new JScrollPane(resultTextArea);
+
+panel.add(resultLabel);
+panel.add(scrollPane);
+
+return panel;
+}
+
+private void calculateButtonClicked() {
+int dimension;
+try {
+dimension = Integer.parseInt(dimensionTextField.getText());
+} catch (NumberFormatException ex) {
+JOptionPane.showMessageDialog(this, "Невірний формат введеної розмірності матриці!", "Помилка", JOptionPane.ERROR_MESSAGE);
+return;
+}
+
+double[][] matrix;
+try {
+matrix = readMatrixFromTextArea(dimension);
+} catch (CustomException ex) {
+JOptionPane.showMessageDialog(this, ex.getMessage(), "Помилка", JOptionPane.ERROR_MESSAGE);
+return;
+}
+
+double[] vectorB = new double[dimension];
+for (int i = 0; i < dimension; i++) {
+double sum = 0;
+for (int j = 0; j < dimension; j++) {
+sum += matrix[i][j];
+}
+vectorB[i] = sum / dimension;
+}
+
+StringBuilder resultBuilder = new StringBuilder();
+for (int i = 0; i < dimension; i++) {
+resultBuilder.append("B[").append(i + 1).append("]: ").append(vectorB[i]).append("\n");
+}
+
+resultTextArea.setText(resultBuilder.toString());
+}
+
+private double[][] readMatrixFromTextArea(int dimension) throws CustomException {
+double[][] matrix = new double[dimension][dimension];
+
+String matrixText = matrixTextArea.getText();
+String[] rows = matrixText.split("\n");
+
+if (rows.length != dimension) {
+throw new CustomException("Кількість рядків матриці не співпадає з введеною розмірністю!");
+}
+
+for (int i = 0; i < dimension; i++) {
+String[] elements = rows[i].split(" ");
+
+if (elements.length != dimension) {
+throw new CustomException("Кількість елементів у рядку " + (i + 1) + " не співпадає з введеною розмірністю!");
+}
+
+for (int j = 0; j < dimension; j++) {
+try {
+matrix[i][j] = Double.parseDouble(elements[j]);
+} catch (NumberFormatException ex) {
+throw new CustomException("Невірний формат елемента у рядку " + (i + 1) + ", стовпці " + (j + 1) + "!");
+}
+}
+}
+
+return matrix;
+}
+
+public static void main(String[] args) {
+SwingUtilities.invokeLater(new Runnable() {
+@OverRide
+public void run() {
+MatrixVectorGUI gui = new MatrixVectorGUI();
+gui.setVisible(true);
+}
+});
+}
+}
+
+class CustomException extends ArithmeticException {
+public CustomException(String message) {
+super(message);
+}
+}
+
